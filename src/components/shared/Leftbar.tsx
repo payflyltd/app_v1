@@ -20,7 +20,7 @@ const Leftbar = () => {
             const response = await axios.get('https://blockchainbinaryopt.shop/payfly/backend/api/logout.php');
             if (response.data.success) {
                 setUser(null);
-                navigate('/login');
+                navigate('/signin');
             } else {
                 console.error('Logout failed');
             }
