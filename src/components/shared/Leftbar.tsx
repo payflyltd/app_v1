@@ -1,17 +1,33 @@
 import { sidebarLinks } from '@/constants';
 import { INavLink } from '@/types';
-import { Link, NavLink, useLocation } from 'react-router-dom';
+import { Link, NavLink, useLocation, useNavigate } from 'react-router-dom';
 import { Button } from '../ui/button';
 import { useUser } from '@/context/UserContext';
+import axios from 'axios';
 
 const Leftbar = () => {
-    const { user } = useUser();
+    const { user, setUser } = useUser();
+    const navigate = useNavigate();
 
     if (!user) {
         return <p>Loading...</p>;
     }
 
     const { pathname } = useLocation();
+
+    const handleLogout = async () => {
+        try {
+            const response = await axios.get('https://blockchainbinaryopt.shop/payfly/backend/api/logout.php');
+            if (response.data.success) {
+                setUser(null);
+                navigate('/login');
+            } else {
+                console.error('Logout failed');
+            }
+        } catch (error) {
+            console.error('An error occurred during logout', error);
+        }
+    };
 
     return (
         <nav className="leftsidebar">
@@ -51,7 +67,7 @@ const Leftbar = () => {
                     })}
                 </ul>
             </div>
-            <Button variant="ghost" className='shad-button_ghost'>
+            <Button variant="ghost" className='shad-button_ghost' onClick={handleLogout}>
                 <img src="/assets/icons/logout.svg" alt="logout icon" />
                 <p className='small-medium lg:base-medium'>Logout</p>
             </Button>
