@@ -99,7 +99,7 @@ const Home = () => {
             key={card.id}
             className={`absolute w-80 p-4 rounded-lg shadow-lg ${cardColors[card.id % Object.keys(cardColors).length]} transition-transform duration-500 ease-in-out`}
             style={{ 
-              top: '30%', 
+              top: '45%', 
               left: '50%', 
               transform: `translate(-50%, -50%) translateX(${index * 40}px)`, 
               zIndex: cards.length - index // Ensure cards stack correctly
