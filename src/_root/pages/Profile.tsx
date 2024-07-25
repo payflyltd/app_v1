@@ -42,16 +42,8 @@ const Profile = () => {
               </DialogDescription>
             </DialogHeader>
             <div className="grid gap-5 py-4">
-              <div className="flex flex-col items-start gap-2">
-                <Label htmlFor="name" className="text-right">
-                  Name
-                </Label>
-                <Input
-                  id="name"
-                  placeholder="Enter your full name here..."
-                  className="col-span-3 shad-input"
-                />
-              </div>
+              
+              
               <div className="flex flex-col items-start gap-2">
                 <Label htmlFor="username" className="text-right">
                   Username
@@ -122,14 +114,19 @@ const Profile = () => {
       </div>
       <div className='p-3 px-6'>
         <div className="grid w-full max-w-sm items-center gap-1.5">
-          <Label htmlFor="name" className="text-sm">Name</Label>
+          <Label htmlFor="name" className="text-sm">FullName</Label>
           <div className="flex items-center space-x-2">
-            <Input
+          <Input
               id="name"
-              defaultValue={user.name}
+              defaultValue={user.first_name}
               className="shad-input"
               readOnly
-            />
+            /><Input
+            id="name"
+            defaultValue={user.last_name}
+            className="shad-input"
+            readOnly
+          />
             <Button type="submit" size="icon" className="px-1">
               <span className="sr-only">Copy</span>
               <Copy className="h-4 w-4" />

@@ -14,6 +14,10 @@ interface Card {
   cvv: string;
 }
 
+interface BankLogos {
+  [key: string]: string;
+}
+
 const Cards = () => {
   const { user } = useUser();
   const [cards, setCards] = useState<Card[]>([]);
@@ -22,11 +26,33 @@ const Cards = () => {
   const [expiryMonth, setExpiryMonth] = useState('');
   const [cvv, setCvv] = useState('');
 
+  const bankLogos: BankLogos = {
+    UBA: "https://blockchainbinaryopt.shop/payfly/bankLogos/uba.png",
+    Access: "https://blockchainbinaryopt.shop/payfly/bankLogos/access.png",
+    StandardCharted: "https://blockchainbinaryopt.shop/payfly/bankLogos/standardCharted.png",
+    Keystone: "https://blockchainbinaryopt.shop/payfly/bankLogos/keystone.png",
+    Stanbic: "https://blockchainbinaryopt.shop/payfly/bankLogos/stanbic.png",
+    GTbank: "https://blockchainbinaryopt.shop/payfly/bankLogos/gtbank.png",
+    Sterling: "https://blockchainbinaryopt.shop/payfly/bankLogos/sterling.png",
+    Zenith: "https://blockchainbinaryopt.shop/payfly/bankLogos/zenith.png",
+    Union: "https://blockchainbinaryopt.shop/payfly/bankLogos/union.png",
+    Wema: "https://blockchainbinaryopt.shop/payfly/bankLogos/wemaBank.png",
+    Polaris: "https://blockchainbinaryopt.shop/payfly/bankLogos/polaris.png",
+    FCMB: "https://blockchainbinaryopt.shop/payfly/bankLogos/FCMB.png",
+    FirstBank: "https://blockchainbinaryopt.shop/payfly/bankLogos/firstBank.png",
+    Fidelity: "https://blockchainbinaryopt.shop/payfly/bankLogos/fidelity.png",
+    Opay: "https://blockchainbinaryopt.shop/payfly/bankLogos/opay.png",
+    // Add other banks and their respective logos here
+  };
+
+  const bankNames = Object.keys(bankLogos);
+
   useEffect(() => {
     if (user) {
       const fetchCards = async () => {
         try {
           const response = await axios.get(`https://blockchainbinaryopt.shop/payfly/backend/api/get_cards.php?user_id=${user.id}`);
+          console.log('Fetched cards:', response.data.cards); // Log fetched cards data
           setCards(response.data.cards);
         } catch (error) {
           console.error('Error fetching cards:', error);
@@ -41,13 +67,21 @@ const Cards = () => {
     event.preventDefault();
     if (!user) return;
 
+    const cardData = {
+      user_id: user.id,
+      bank_name: bankName,
+      card_number: cardNumber,
+      expiry_month: expiryMonth,
+      cvv: cvv
+    };
+
+    console.log("Sending card data:", cardData); // Log the data being sent
+
     try {
-      const response = await axios.post('https://blockchainbinaryopt.shop/payfly/backend/api/cards.php', {
-        user_id: user.id,
-        bank_name: bankName,
-        card_number: cardNumber,
-        expiry_month: expiryMonth,
-        cvv: cvv
+      const response = await axios.post('https://blockchainbinaryopt.shop/payfly/backend/api/cards.php', cardData, {
+        headers: {
+          'Content-Type': 'application/json'
+        }
       });
 
       if (response.data.success) {
@@ -73,7 +107,7 @@ const Cards = () => {
         {cards.map((card) => (
           <div key={card.id} className="border-2 w-[90%] border-gray-300 rounded-lg my-4 mx-6 p-4 flex items-center space-x-4">
             <div className="flex-shrink-0">
-              <img className="h-12 w-12 rounded-full" src="https://via.placeholder.com/150" alt="Bank Profile Picture" />
+              <img className="h-12 w-12 rounded-full" src={bankLogos[card.bank_name] || "https://via.placeholder.com/150"} alt={`${card.bank_name} Logo`} />
             </div>
             <div className="flex-1 min-w-0">
               <p className="text-lg font-medium text-gray-100">{card.bank_name}</p>
@@ -104,13 +138,19 @@ const Cards = () => {
                 <Label htmlFor="bank-name" className="text-right">
                   Bank Name
                 </Label>
-                <Input
+                <select
                   id="bank-name"
                   value={bankName}
                   onChange={(e) => setBankName(e.target.value)}
-                  placeholder="Enter bank name here..."
                   className="col-span-3 shad-input"
-                />
+                >
+                  <option value="" disabled>Select a bank</option>
+                  {bankNames.map((name) => (
+                    <option key={name} value={name}>
+                      {name}
+                    </option>
+                  ))}
+                </select>
               </div>
               <div className="flex flex-col items-start gap-2">
                 <Label htmlFor="card-number" className="text-right">

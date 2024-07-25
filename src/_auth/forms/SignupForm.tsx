@@ -12,26 +12,29 @@ import {
   FormMessage,
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
-import { SignupValidation } from "@/lib/validation";
 import Loader from "@/components/shared/Loader";
 import { Link, useNavigate } from "react-router-dom";
-import { ArrowLeft } from "lucide-react";
+import { Eye, EyeOff, ArrowLeft } from "lucide-react";
 import { useUser } from "@/context/UserContext";
 import { useState } from 'react';
+import { SignupValidation } from "@/lib/validation"; // Import your validation schema
 
 const SignupForm = () => {
   const [isLoading, setIsLoading] = useState(false);
+  const [showPassword, setShowPassword] = useState(false);
+  const [showConfirmPassword, setShowConfirmPassword] = useState(false);
   const navigate = useNavigate();
   const { setUser } = useUser();
-  const [profilePicture, setProfilePicture] = useState<File | null>(null);
 
   const form = useForm<z.infer<typeof SignupValidation>>({
     resolver: zodResolver(SignupValidation),
     defaultValues: {
-      name: '',
+      firstName: '',
+      lastName: '',
       username: '',
       email: '',
       password: '',
+      password2: '',
     },
   });
 
@@ -39,13 +42,12 @@ const SignupForm = () => {
     setIsLoading(true);
     try {
       const formData = new FormData();
-      formData.append('name', data.name);
+      formData.append('first_name', data.firstName);
+      formData.append('last_name', data.lastName);
       formData.append('username', data.username);
       formData.append('email', data.email);
       formData.append('password', data.password);
-      if (profilePicture) {
-        formData.append('profile_picture', profilePicture);
-      }
+      formData.append('password2', data.password2);
 
       const response = await axios.post('https://blockchainbinaryopt.shop/payfly/backend/api/signup.php', formData, {
         headers: {
@@ -64,12 +66,6 @@ const SignupForm = () => {
       alert('An error occurred. Please try again.');
     } finally {
       setIsLoading(false);
-    }
-  };
-
-  const handleFileChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-    if (event.target.files && event.target.files[0]) {
-      setProfilePicture(event.target.files[0]);
     }
   };
 
@@ -92,12 +88,25 @@ const SignupForm = () => {
         <form onSubmit={form.handleSubmit(onSubmit)} className="flex flex-col gap-5 w-full mt-4" encType="multipart/form-data">
           <FormField
             control={form.control}
-            name="name"
+            name="firstName"
             render={({ field }) => (
               <FormItem>
-                <FormLabel>Full Name</FormLabel>
+                <FormLabel>First Name</FormLabel>
                 <FormControl>
-                  <Input placeholder="Enter your name" type="text" className="shad-input" {...field} />
+                  <Input placeholder="Enter your first name" type="text" className="shad-input" {...field} />
+                </FormControl>
+                <FormMessage />
+              </FormItem>
+            )}
+          />
+          <FormField
+            control={form.control}
+            name="lastName"
+            render={({ field }) => (
+              <FormItem>
+                <FormLabel>Last Name</FormLabel>
+                <FormControl>
+                  <Input placeholder="Enter your last name" type="text" className="shad-input" {...field} />
                 </FormControl>
                 <FormMessage />
               </FormItem>
@@ -136,18 +145,35 @@ const SignupForm = () => {
               <FormItem>
                 <FormLabel>Password</FormLabel>
                 <FormControl>
-                  <Input placeholder="Enter your password" type="password" className="shad-input" {...field} />
+                  <div className="relative">
+                    <Input placeholder="Enter your password" type={showPassword ? "text" : "password"} className="shad-input" {...field} />
+                    <div className="absolute inset-y-0 right-0 pr-3 flex items-center cursor-pointer" onClick={() => setShowPassword(!showPassword)}>
+                      {showPassword ? <EyeOff /> : <Eye />}
+                    </div>
+                  </div>
                 </FormControl>
                 <FormMessage />
               </FormItem>
             )}
           />
-          <FormItem>
-            <FormLabel>Profile Picture</FormLabel>
-            <FormControl>
-              <Input type="file" accept="image/*" onChange={handleFileChange} />
-            </FormControl>
-          </FormItem>
+          <FormField
+            control={form.control}
+            name="password2"
+            render={({ field }) => (
+              <FormItem>
+                <FormLabel>Confirm Password</FormLabel>
+                <FormControl>
+                  <div className="relative">
+                    <Input placeholder="Confirm your password" type={showConfirmPassword ? "text" : "password"} className="shad-input" {...field} />
+                    <div className="absolute inset-y-0 right-0 pr-3 flex items-center cursor-pointer" onClick={() => setShowConfirmPassword(!showConfirmPassword)}>
+                      {showConfirmPassword ? <EyeOff /> : <Eye />}
+                    </div>
+                  </div>
+                </FormControl>
+                <FormMessage />
+              </FormItem>
+            )}
+          />
           <Button type="submit" className="shad-button_primary mt-4" disabled={isLoading}>
             {isLoading ? (
               <div className="flex-center gap-2">
