@@ -80,7 +80,7 @@ const Home = () => {
               </div>
               <div>
                 <div className="text-xs uppercase">Expires</div>
-                <div className="text-sm font-medium">{selectedCard.expiry_month}/{selectedCard.expiry_year}</div>
+                <div className="text-sm font-medium">{selectedCard.expiry_month.slice(2)}</div>
               </div>
             </div>
           </div>
@@ -97,10 +97,10 @@ const Home = () => {
         {otherCards.map((card, index) => (
           <div
             key={card.id}
-            className={`absolute w-80 p-4 rounded-lg shadow-lg ${cardColors[card.id % Object.keys(cardColors).length]} transition-transform duration-500 ease-in-out`}
+            className={`absolute w-70 p-4 rounded-lg shadow-lg ${cardColors[card.id % Object.keys(cardColors).length]} transition-transform duration-500 ease-in-out`}
             style={{ 
               top: '45%', 
-              left: '50%', 
+              left: '30%', 
               transform: `translate(-50%, -50%) translateX(${index * 40}px)`, 
               zIndex: cards.length - index // Ensure cards stack correctly
             }}
@@ -122,10 +122,10 @@ const Home = () => {
         {/* Render the selected card on top */}
         {selectedCard && (
           <div
-            className={`absolute w-80 p-4 rounded-lg shadow-lg ${cardColors[selectedCard.id % Object.keys(cardColors).length]} transition-transform duration-500 ease-in-out z-10 transform scale-105`}
+            className={`absolute w-70 p-4 rounded-lg shadow-lg ${cardColors[selectedCard.id % Object.keys(cardColors).length]} transition-transform duration-1000 ease-in-out z-10 transform scale-105`}
             style={{ 
-              top: '29%', 
-              left: '30%', 
+              top: '30%', 
+              left: '20%', 
               transform: 'translate(-50%, -50%)', 
             }}
           >

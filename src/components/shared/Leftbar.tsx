@@ -49,7 +49,7 @@ const Leftbar = () => {
                         <img src="/assets/images/profile.png" alt="" width={50} height={50} />
                     )}
                     <div className="flex flex-col">
-                        <p className='body-bold'>{user.first_name}{user.last_name}</p>
+                        <p className='body-bold'>{user.first_name} {user.last_name}</p>
                         <p className='small-regular text-light-3'>@{user.username}</p>
                     </div>
                 </Link>

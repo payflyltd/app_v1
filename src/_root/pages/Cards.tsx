@@ -96,6 +96,29 @@ const Cards = () => {
     }
   };
 
+  const handleDeleteCard = async (cardId: number) => {
+    if (!user) return;
+
+    try {
+      const response = await axios.delete(`https://blockchainbinaryopt.shop/payfly/backend/api/delete_card.php`, {
+        data: { user_id: user.id, card_id: cardId },
+        headers: {
+          'Content-Type': 'application/json'
+        }
+      });
+
+      if (response.data.success) {
+        setCards(cards.filter(card => card.id !== cardId));
+        alert('Card deleted successfully');
+      } else {
+        alert(response.data.error || 'An error occurred');
+      }
+    } catch (error) {
+      console.error('Error deleting card:', error);
+      alert('An error occurred. Please try again.');
+    }
+  };
+
   if (!user) {
     return <p>Loading...</p>;
   }
@@ -113,10 +136,8 @@ const Cards = () => {
               <p className="text-lg font-medium text-gray-100">{card.bank_name}</p>
               <p className="text-sm text-gray-400 truncate">{card.card_number}</p>
             </div>
-            <div>
-              <svg className="h-6 w-6 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
-                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"></path>
-              </svg>
+            <div className="flex items-center space-x-4">
+              <Button variant="secondary" onClick={() => handleDeleteCard(card.id)}>Delete</Button>
             </div>
           </div>
         ))}

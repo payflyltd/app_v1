@@ -9,6 +9,7 @@ interface User {
   username: string;
   email: string;
   profile_picture: string;
+  address: string;
   // Add any other user properties you need
 }
 
