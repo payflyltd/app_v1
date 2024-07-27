@@ -17,13 +17,12 @@ import { Link } from "react-router-dom";
 import { useUser } from '@/context/UserContext';
 import axios from 'axios';
 
-// Define the User type
-
 const Profile: React.FC = () => {
   const { user, setUser } = useUser();
+  const [isEditModalOpen, setIsEditModalOpen] = useState(false);
 
   if (!user) {
-    return <p>Loading...</p>; // Or handle it in a different way
+    return <p>Loading...</p>;
   }
 
   // Set initial state with user's data
@@ -32,7 +31,7 @@ const Profile: React.FC = () => {
 
   const handleSaveChanges = async () => {
     if (!user.id) {
-      alert('User ID is missing');
+      // Handle missing user ID case
       return;
     }
 
@@ -42,16 +41,16 @@ const Profile: React.FC = () => {
         username,
         address,
       });
+
       if (response.data.success) {
         // Update the user context with the new data
         setUser({ ...user, username, address });
-        alert('Profile updated successfully');
+        setIsEditModalOpen(false); // Close the modal
       } else {
-        alert('Error updating profile: ' + response.data.error);
+        // Handle error response
       }
     } catch (error) {
-      console.error('Error updating profile:', error);
-      alert('Error updating profile');
+      // Handle error
     }
   };
 
@@ -59,7 +58,7 @@ const Profile: React.FC = () => {
     <div className="w-full mt-2">
       <div className="flex items-center w-full gap-5 pe-5">
         <h3 className='h3-bold md:h2-bold text-left w-full py-4 px-6'>Your Profile</h3>
-        <Dialog>
+        <Dialog open={isEditModalOpen} onOpenChange={setIsEditModalOpen}>
           <DialogTrigger asChild>
             <span className="flex flex-col items-center">
               <img src="/assets/icons/edit.svg" width={26} height={26} alt="Edit Profile Icon" />
@@ -83,6 +82,7 @@ const Profile: React.FC = () => {
                   value={username}
                   onChange={(e) => setUsername(e.target.value)}
                   className="col-span-3 shad-input"
+                  readOnly
                 />
               </div>
               <div className="flex flex-col items-start gap-2">
@@ -218,7 +218,7 @@ const Profile: React.FC = () => {
           <div className="flex items-center space-x-2">
             <Input
               id="address"
-              defaultValue={user.address || ''}
+              defaultValue={user.address}
               className="shad-input"
               readOnly
               disabled
